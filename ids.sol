@@ -74,8 +74,8 @@ contract IdentityDirectory {
         uint256 uniqueCount; // unique requests sent
         uint256 signedCount; // total count of signed requests
         uint256 rejectedCount; // total count of rejected requests
-        uint256 validIdCount; // total count of all validated IDs
-        uint256 invalidIdCount; // total count of all invalidated IDs
+        uint256 validCount; // total count of all validated IDs
+        uint256 invalidCount; // total count of all invalidated IDs
         // publicly listed count can be inferred from selfIdList[address].length
     }
 
