@@ -10,12 +10,14 @@ contract IdentityDirectory {
     }
 
     enum IdClass {
+        none,
         dns,
         id,
         kyc,
         future
     }
     enum IdType {
+        none,
         web3,
         web2,
         web1,
@@ -29,9 +31,9 @@ contract IdentityDirectory {
         bool signed;
         bool valid; //combined with invalidated for 4 states (2 bits)
         bool invalidated; // combines with valid to make a state for neutral, valid, invalid and frozen.
-        bool selfListed; // Also publishes to registrar list
-        bool publicListed;
+        bool listed; // Also publishes to registrar list
         bool future;
+        bool future1;
         bool future2;
     }
 
@@ -54,19 +56,14 @@ contract IdentityDirectory {
     }
 
     struct ValidatedIdentity {
-        SignedIdentity identity;
-        Signature[] witnesses;
-        Signature[] registrars;
-        Signature[] kycWitnesses;
-    }
-
-    struct ListedIdentity {
-        bool active;
-        ValidatedIdentity[] validId;
-        Signature lister; // the registrar that authorized public listing of the validated record
-        Signature[] witnesses; 
-        Signature[] registrars;
-        Signature[] kycWitnesses;
+        SignedIdentity signed;
+        Signature registrar;
+        uint256 witnessSigCount;
+        mapping(uint256 => Signature) witnesses;
+        uint256 registrarSigCount;
+        mapping(uint256 => Signature) registrars;
+        uint256 kycSigCount;
+        mapping(uint256 => Signature) kycWitnesses;
     }
 
     struct RegistrantStats {
@@ -92,13 +89,10 @@ contract IdentityDirectory {
     }
 
     struct RegistrarStats {
-        uint256 validationCount; // total count of identities publicly listed
-        uint256 rejectedCount; // a count of total identities rejected for validation
         uint256 validCount; // a count of total identities validated
-        uint256 idRemovedCount; // total count of identities removed from the public directory
-        uint256 uniqueRequestCount; // unique requests sent
-        uint256 signedRequestCount; // total count of signed requests
-        uint256 rejectedRequestCount; // total count of rejected requests
+        uint256 invalidatedCount; // a count of how many invalidated records you've pushed
+        uint256 rejectedCount; // a count of total identities rejected for validation
+        uint256 removedCount; // total count of identities removed from the public directory
         // publicly listed count can be inferred from validIdList[address].length
     }
 
@@ -107,15 +101,19 @@ contract IdentityDirectory {
     mapping(address => bool) public registrars;
     uint256 public registrarCount;
 
-    // Listed Identity Directory Records
-    mapping(address => ListedIdentity[]) public validIdList; // the list of id records the address has validated which are public
-    mapping(address => ListedIdentity[]) public witnessIdList; // the list of listed signed Ids by witness, a witnesses public record of all signed ids
-    mapping(address => ListedIdentity[]) public selfIdList; // gets pushed to when a user requests a public record. This allows for reverse lookups
-    mapping(address => ListedIdentity) public defaultIdentity; // gets a default Identity profile for a given address. Public for reverse lookup.
+    // Publicly Listed Identity Directory Records
+    mapping(address => ValidatedIdentity[]) public validIdList; // the list of id records the address has validated which are public
+    mapping(address => SignedIdentity[]) public witnessIdList; // the list of listed signed Ids by witness, a witnesses public record of all signed ids
+    mapping(address => SignedIdentity[]) public selfIdList; // gets pushed to when a user requests a public record. This allows for reverse lookups
+    mapping(address => ValidatedIdentity) public defaultIdentity; // gets a default Identity profile for a given address. Public for reverse lookup.
 
-    // Identity Directory (Full)
+    // Public Identity Directory
+    mapping(string => ValidatedIdentity) public i; // the public record for an id
+    mapping(string => address) public validatingRegistrar; // the registrar of a validated id
+
+    // Identity Directory (Fully Qualified Identity witness.idname.entity)
     mapping(address => mapping(string => mapping (address => SignedIdentity))) public listedId; // gets an identity using the FQID from the public record. ie com.tiktok.user.7157726993374938117
-    mapping(address => mapping(string => mapping (address => SignedIdentity))) private validId; // maps the registrant account to the validated identity and the identity to the witness. id[witness][idName][registrant]
+    mapping(address => mapping(string => mapping (address => ValidatedIdentity))) private validId; // maps the registrant account to the validated identity and the identity to the witness. id[witness][idName][registrant]
     mapping(address => mapping(string => mapping (address => SignedIdentity))) private signedId; // maps the registrant account to the signed identity and the identity to the witness. id[witness][idName][registrant]
     mapping(address => mapping(string => mapping (address => IdentityRequest))) private requestedId; // maps the registrant account to the identity and the identity to the witness for approval. id[witness][idName][registrant]
 
@@ -126,7 +124,7 @@ contract IdentityDirectory {
     
     //Checks for prior requests, signing or public listings
     mapping(string => bool) public isListed; // returns true or false if the identity is publicly listed.
-    mapping(string => bool) public isValid;
+    mapping(string => bool) private isValid;
     mapping(address => mapping(string => bool)) public isSigned; // returns true or false if the request has been signed by a specific witness.
     mapping(address => mapping(string => mapping(address => bool))) private isRequested; // returns true or false if the request has been requested by the specific registrant/registrar.    
     mapping(address => mapping(string => bool)) private hasRequested; // if the user has requested prior (used for unique calculations)
@@ -136,44 +134,45 @@ contract IdentityDirectory {
 
     //Alerts
     event RequestIdentityAlert(
-        address indexed witness,
-        string requestedId,
-        address registrant,
+        string indexed requestedId,
+        address witness,
         IdClass idClass,
         IdType idType
     );
     event SignedIdentityAlert(
-        address indexed witness,
-        string signedId,
-        address registrant,
+        string indexed signedId,
+        address witness,
         IdClass idClass,
         IdType idType
     );
     event RejectedIdentityAlert(
-        address indexed witness,
-        string signedId,
+        string indexed signedId,
         address registrant,
         IdClass idClass,
         IdType idType
     );
     event UnsignedIdentityAlert(
-        address indexed witness,
-        string signedId,
-        address registrant,
+        string indexed signedId,
+        address witness,
         IdClass idClass,
         IdType idType
     );
     event ValidatedIdentityAlert(
-        address indexed registrar,
+        string indexed validId,
+        address registrar,
         address witness,
-        string validId,
-        address registrant,
+        IdClass idClass,
+        IdType idType
+    );
+    event ValidationCollisionAlert(
+        string indexed validId,
+        address previousRegistrar,
+        address currentRegistrar,
         IdClass idClass,
         IdType idType
     );
     event ListedIdentityAlert(
         address indexed lister,
-        address witness,
         string listedId,
         address registrant,
         IdClass idClass,
@@ -255,7 +254,7 @@ contract IdentityDirectory {
         witnessStats[_witness].requestCount ++;
 
 
-        emit RequestIdentityAlert(_witness, _requestedIdentity, msg.sender, _idClass, _idType);
+        emit RequestIdentityAlert(_requestedIdentity,_witness,  _idClass, _idType);
     }
 
     function signIdentity(
@@ -285,27 +284,32 @@ contract IdentityDirectory {
             registrantSignature.r != bytes32(0),
             "This record has not been requested, have the registrant request this identity first."
         );
+        require(
+            signatureMatches(registrantSignature, _registrant, _requestedIdentity),
+            "Invalid signature. Registrant signature error"
+        );
 
         // sign actions
         registrantStats[_registrant].signedCount ++;
         witnessStats[_witness].signedCount ++;
         idRequest.flags.signed = true;
         // adding record
+        isSigned[_witness][_requestedIdentity] = true;
         signedId[_witness][_requestedIdentity][_registrant] = SignedIdentity(idRequest, _signature);
+        //privateSigned[_requestedIdentity][_registrant] = SignedIdentity(idRequest, _signature);
 
         // sign notification
         IdClass idClass = idRequest.requestClass;
         IdType idType = idRequest.requestType;
 
 
-        emit SignedIdentityAlert(_witness,_requestedIdentity,_registrant,idClass, idType);
+        emit SignedIdentityAlert(_requestedIdentity, _witness, idClass, idType);
     }
 
     function rejectIdentity(
         address _witness,
         string memory _requestedIdentity,
-        address _registrant,
-        Signature memory _signature
+        address _registrant
     ) public {
         require(
             msg.sender == _witness, 
@@ -314,10 +318,6 @@ contract IdentityDirectory {
         require(
             !isSigned[_witness][_requestedIdentity],
             "Identity already signed."
-        );
-        require(
-            signatureMatches(_signature, msg.sender, _requestedIdentity),
-            "Invalid signature. you did not sign string _requestedIdentity with Signature(v,r,s) _signature"
         );
 
         // Retrieve the identity request
@@ -337,7 +337,7 @@ contract IdentityDirectory {
         IdClass idClass = idRequest.requestClass;
         IdType idType = idRequest.requestType;
 
-        emit RejectedIdentityAlert(_witness,_requestedIdentity,_registrant,idClass, idType);
+        emit RejectedIdentityAlert(_requestedIdentity,_registrant,idClass, idType);
     }
 
     function unsignIdentity(
@@ -348,7 +348,11 @@ contract IdentityDirectory {
     ) public {
         require(
             msg.sender == _witness, 
-            "Only signing witness unsign this record."
+            "Only signing witness may unsign this record."
+        );
+        require(
+            !isValid[_requestedIdentity],
+            "Validated identities cannot be unsigned."
         );
         require(
             isSigned[_witness][_requestedIdentity],
@@ -367,12 +371,105 @@ contract IdentityDirectory {
         registrantStats[_registrant].signedCount --;
         witnessStats[_witness].signedCount --;
         id.request.flags.signed = false;
+        isSigned[_witness][_requestedIdentity] = true;
 
         //unsign alerts
         IdClass idClass = id.request.requestClass;
         IdType idType = id.request.requestType;
 
-        emit UnsignedIdentityAlert(_witness,_requestedIdentity,_registrant,idClass, idType);
+        emit UnsignedIdentityAlert(_requestedIdentity, _witness, idClass, idType);
+    }
+
+    function validateIdentity(
+        address _witness,
+        string memory _requestedIdentity,
+        address _registrant,
+        Signature memory _signature
+    ) public onlyRegistrar {
+
+        SignedIdentity storage sid = signedId[_witness][_requestedIdentity][_registrant];
+        IdClass idClass = sid.request.requestClass;
+        IdType idType = sid.request.requestType;
+        // should check signature validity of all requests
+        if(isValid[_requestedIdentity]) { // check if record already exists
+
+            // Retrieve the identity and registrant signature of the current request
+            Signature memory registrantSig = sid.request.registrant;
+
+            // Retrieve the address of the record's registrar and the record's signature, registrant signature should match
+            address previousRegistrar = validatingRegistrar[_requestedIdentity];
+            SignedIdentity storage oldId = signedId[previousRegistrar][_requestedIdentity][_registrant];
+            Signature memory previousSig = oldId.request.registrant;
+
+            if (registrantSig.r == previousSig.r) { // if record matches previous record
+                // get the validated record and push new registrar signature
+                ValidatedIdentity storage vid = validId[previousRegistrar][_requestedIdentity][_registrant];
+                vid.registrars[registrarCount];
+                // update registrant, witness and registrar stats
+                registrantStats[_registrant].validCount ++;
+                witnessStats[_registrant].validCount ++;
+                registrarStats[msg.sender].validCount ++;
+
+            } else { // check for collision
+
+                validId[msg.sender][_requestedIdentity][_registrant] = ValidatedIdentity(sid, _signature, 0, , 0, , 0, );
+                sid.request.flags.invalidated=true;
+                oldId.request.flags.invalidated=true; // valid but frozen
+
+                address oldWitness = signatureAddress(oldId.witness, _requestedIdentity);
+                address oldRegistrant = signatureAddress(oldId.request.registrant, _requestedIdentity);
+
+                registrantStats[oldRegistrant].validCount --;
+                witnessStats[oldWitness].validCount --;
+                registrarStats[previousRegistrar].validCount --;
+
+                registrarStats[previousRegistrar].invalidatedCount ++;
+                registrarStats[msg.sender].invalidatedCount ++;
+
+                emit ValidationCollisionAlert(_requestedIdentity, previousRegistrar, msg.sender, idClass, idType);
+            }
+
+        } else {
+            sid.request.flags.valid = true; // set record as valid
+            validId[msg.sender][_requestedIdentity][_registrant] = ValidatedIdentity(sid, _signature, new Signature[](0), new Signature[](0), new Signature[](0));
+            registrantStats[_registrant].validCount ++;
+            witnessStats[_registrant].validCount ++;
+            registrarStats[msg.sender].validCount ++;
+        }
+
+    }
+
+    function makePublic(address _authority, string memory _requestedIdentity, Signature memory _signature) public {
+        ValidatedIdentity storage vid = validId[_authority][_requestedIdentity][msg.sender];
+        SignedIdentity storage sid = signedId[_authority][_requestedIdentity][msg.sender];
+        if (vid.signed.request.flags.requested) {
+            // is a validated ID
+            vid.signed.request.flags.listed = true;
+            validIdList[_authority].push(vid);
+            selfIdList[msg.sender].push(vid.signed);
+            witnessIdList[signatureAddress(vid.signed.witness, _requestedIdentity)].push(vid.signed);
+
+            i[_requestedIdentity] = ValidatedIdentity(true, vid, _signature, 0, 0, 0);
+
+            IdClass idClass = vid.signed.request.requestClass;
+            IdType idType = vid.signed.request.requestType;
+
+            emit ListedIdentityAlert(msg.sender, _requestedIdentity, _authority, idClass, idType);
+
+        } else if (sid.request.flags.requested) {
+            // is a signed ID
+            sid.request.flags.listed = true;
+            selfIdList[msg.sender].push(sid);
+            witnessIdList[signatureAddress(sid.witness, _requestedIdentity)].push(vid.signed);
+
+        }
+    }
+
+    function lookupRecord(address _authority, string memory _requestedIdentity, address _registrant) public view onlyRegistrar returns (ValidatedIdentity memory) {
+        ValidatedIdentity storage vid = validId[_authority][_requestedIdentity][_registrant];
+        if (vid.signed.request.flags.requested) return vid;
+        ValidatedIdentity memory record;
+        return record; // for a 0 value? ... ValidatedIdentity(SignedIdentity(IdentityRequest(IdClass(0), IdType(0), IdFlags(0,0,0,0,0,0,0,0),Signature(bytes32(0),bytes32(0),0)),Signature(bytes32(0),bytes32(0),0)));
     }
 }
 
