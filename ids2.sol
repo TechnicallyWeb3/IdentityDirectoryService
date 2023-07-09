@@ -4,6 +4,19 @@ pragma solidity ^0.8.18;
 
 contract IdentityDirectory {
 
+    constructor() {
+        // Initialize the authorized registrar addresses
+        isFounder[0x7b9a421575f72D17331CA7433aeA46eC5d5B2739] = true; //@mancinotech
+        isFounder[0x80484108D571f4Ee96521710F5D027E9d2F59AdF] = true; //@furt_tech
+        isFounder[0xE7D3039dFDa68Ffa9Bc56e731CF9e8f85904703d] = true; //@theafrocoder
+        isFounder[0xe0B02A2652Caa79041f2798Fa615ec39bfBbBfA8] = true; //@devilking6105
+
+        isRegistrar[0x7b9a421575f72D17331CA7433aeA46eC5d5B2739] = true; //@mancinotech
+        isRegistrar[0x80484108D571f4Ee96521710F5D027E9d2F59AdF] = true; //@furt_tech
+        isRegistrar[0xE7D3039dFDa68Ffa9Bc56e731CF9e8f85904703d] = true; //@theafrocoder
+        isRegistrar[0xe0B02A2652Caa79041f2798Fa615ec39bfBbBfA8] = true; //@devilking6105
+    }
+
     // User Types: Project Founders(super admins), Registrars(admin group), Witnesses, Registrant
 
     // Registrar list for public listing rights
