@@ -15,6 +15,8 @@ contract IdentityDirectory {
         isRegistrar[0x80484108D571f4Ee96521710F5D027E9d2F59AdF] = true; //@furt_tech
         isRegistrar[0xE7D3039dFDa68Ffa9Bc56e731CF9e8f85904703d] = true; //@theafrocoder
         isRegistrar[0xe0B02A2652Caa79041f2798Fa615ec39bfBbBfA8] = true; //@devilking6105
+
+        registrarCount = 4;
     }
 
     // User Types: Project Founders(super admins), Registrars(admin group), Witnesses, Registrant
@@ -195,7 +197,7 @@ contract IdentityDirectory {
     function claimIdentity(
         address _witness,
         string memory _idName,
-        Signature memory _signature
+        string memory signature
     ) public {
         require(
             msg.sender != _witness,
@@ -209,6 +211,9 @@ contract IdentityDirectory {
             !claimedRecord[_witness][_idName][msg.sender].idStatus.claimed,
             "The witness already has this request, have them sign it to continue."
         );
+        // convert signature to Struct
+        Signature memory _signature = parseSignature(signature);
+
         require(
             signatureMatches(_signature, msg.sender, _idName),
             "Invalid signature. you did not sign string _idName with Signature(v,r,s) _signature"
@@ -230,7 +235,7 @@ contract IdentityDirectory {
     function signIdentity(
         string memory _idName,
         address _registrant,
-        Signature memory _signature
+        string memory signature
     ) public {
 
         ClaimedId memory request = claimedRecord[msg.sender][_idName][_registrant];
@@ -242,6 +247,8 @@ contract IdentityDirectory {
             !request.idStatus.signed,
             "You have already signed this ID."
         );
+        Signature memory _signature = parseSignature(signature);
+
         require(
             signatureMatches(request.registrant, _registrant, _idName),
             "Signature, registrant signature invalid."
