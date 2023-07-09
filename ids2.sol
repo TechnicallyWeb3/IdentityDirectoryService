@@ -136,6 +136,24 @@ contract IdentityDirectory {
         address recoveredAddress = signatureAddress(_signature, _message);
         return (recoveredAddress != address(0) && recoveredAddress == _signer);
     }
+    function parseSignature(string memory signature) internal pure returns (Signature memory) {
+        require(bytes(signature).length == 132, "Invalid signature length");
+
+        bytes32 r = bytesToBytes32(bytes(signature), 0);
+        bytes32 s = bytesToBytes32(bytes(signature), 32);
+        uint8 v = uint8(bytes(signature)[64]);
+
+        return Signature(r, s, v);
+    }
+
+    function bytesToBytes32(bytes memory b, uint256 offset) internal pure returns (bytes32 result) {
+        require(b.length >= offset + 32, "Invalid bytes length");
+
+        assembly {
+            result := mload(add(b, add(32, offset)))
+        }
+    }
+
 
     struct SigType {
         bool witness;
