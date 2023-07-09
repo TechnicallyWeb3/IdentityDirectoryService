@@ -22,9 +22,9 @@ contract IdentityDirectory {
     // User Types: Project Founders(super admins), Registrars(admin group), Witnesses, Registrant
 
     // Registrar list for public listing rights
-    mapping(address => bool) public isFounder;
+    mapping(address => bool) internal isFounder;
     mapping(address => bool) public isRegistrar;
-    uint256 public registrarCount;
+    uint256 internal registrarCount;
 
     modifier onlyFounder() {
         require(isFounder[msg.sender], "Only Project Founders can perform this operation.");
@@ -48,7 +48,7 @@ contract IdentityDirectory {
     }
 
     // encoding/decoding functions for representing Type as a uint8 value
-    function encodeIdType(IdType memory idType) public pure returns (uint8) {
+    function encodeIdType(IdType memory idType) internal pure returns (uint8) {
         uint8 encoded;
         if (idType.dns) encoded |= 0x01;
         if (idType.email) encoded |= 0x02;
@@ -61,7 +61,7 @@ contract IdentityDirectory {
         return encoded;
     }
 
-    function decodeIdType(uint8 encoded) public pure returns (IdType memory) {
+    function decodeIdType(uint8 encoded) internal pure returns (IdType memory) {
         return IdType(
             (encoded & 0x01) != 0,
             (encoded & 0x02) != 0,
@@ -85,7 +85,7 @@ contract IdentityDirectory {
         bool futureUse; // a hashed id for an extra layer of privacy
     }
 
-    function encodeIdStatus(IdStatus memory idStatus) public pure returns (uint8) {
+    function encodeIdStatus(IdStatus memory idStatus) internal pure returns (uint8) {
         uint8 encoded;
         if (idStatus.claimed) encoded |= 0x01;
         if (idStatus.signed) encoded |= 0x02;
@@ -98,7 +98,7 @@ contract IdentityDirectory {
         return encoded;
     }
 
-    function decodeIdStatus(uint8 encoded) public pure returns (IdStatus memory) {
+    function decodeIdStatus(uint8 encoded) internal pure returns (IdStatus memory) {
         return IdStatus(
             (encoded & 0x01) != 0,
             (encoded & 0x02) != 0,
@@ -119,7 +119,7 @@ contract IdentityDirectory {
     function signatureAddress(
         Signature memory _signature,
         string memory _message
-    ) public pure returns (address) {
+    ) internal pure returns (address) {
         bytes32 messageHash = keccak256(abi.encodePacked(_message));
         address recoveredAddress = ecrecover(
             messageHash,
@@ -134,7 +134,7 @@ contract IdentityDirectory {
         Signature memory _signature,
         address _signer,
         string memory _message
-    ) public pure returns (bool) {
+    ) internal pure returns (bool) {
         address recoveredAddress = signatureAddress(_signature, _message);
         return (recoveredAddress != address(0) && recoveredAddress == _signer);
     }
@@ -197,7 +197,7 @@ contract IdentityDirectory {
     function claimIdentity(
         address _witness,
         string memory _idName,
-        string memory signature
+        Signature memory _signature
     ) public {
         require(
             msg.sender != _witness,
@@ -211,8 +211,6 @@ contract IdentityDirectory {
             !claimedRecord[_witness][_idName][msg.sender].idStatus.claimed,
             "The witness already has this request, have them sign it to continue."
         );
-        // convert signature to Struct
-        Signature memory _signature = parseSignature(signature);
 
         require(
             signatureMatches(_signature, msg.sender, _idName),
@@ -235,7 +233,7 @@ contract IdentityDirectory {
     function signIdentity(
         string memory _idName,
         address _registrant,
-        string memory signature
+        Signature memory _signature
     ) public {
 
         ClaimedId memory request = claimedRecord[msg.sender][_idName][_registrant];
@@ -247,8 +245,7 @@ contract IdentityDirectory {
             !request.idStatus.signed,
             "You have already signed this ID."
         );
-        Signature memory _signature = parseSignature(signature);
-
+        // signature checks
         require(
             signatureMatches(request.registrant, _registrant, _idName),
             "Signature, registrant signature invalid."
