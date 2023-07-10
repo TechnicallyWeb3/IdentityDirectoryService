@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.18+commit.87f61d96"
+		"version": "0.8.6+commit.11564f7e"
 	},
 	"language": "Solidity",
 	"output": {
@@ -584,6 +584,19 @@
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "registrarCount",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "string",
@@ -1053,7 +1066,7 @@
 		"compilationTarget": {
 			"contracts\\ids.sol": "IdentityDirectory"
 		},
-		"evmVersion": "paris",
+		"evmVersion": "berlin",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -1066,11 +1079,11 @@
 	},
 	"sources": {
 		"contracts\\ids.sol": {
-			"keccak256": "0x1973d749538523f631c5a0141c87d54cca4734bbba6b478067675226b0e412ba",
+			"keccak256": "0xf04d7f9bd2af26c70cf075ab01ccddb6e8cb32f2943ae37edf27de76c7709c3b",
 			"license": "GPL-3.0",
 			"urls": [
-				"bzz-raw://0e72c5c90329a5aaa34981c2a353be3474eb1481a03a69b9af395283518f7710",
-				"dweb:/ipfs/QmbA7huRR1QbL3yBfVj89fRJRzY9Yr71xkzfmewybWdzsf"
+				"bzz-raw://b68b6c18b9e878c7f21af55ff35c36147880a2c5163530bb83585b60078be88c",
+				"dweb:/ipfs/Qmdeap8SeuES8rGDvMD33Wn3dQLyDqE1NkwEfMudgTiuAi"
 			]
 		}
 	},

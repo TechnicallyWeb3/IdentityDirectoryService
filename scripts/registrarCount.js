@@ -1,11 +1,10 @@
 const IdentityDirectory = artifacts.require("IdentityDirectory");
-console.log("Hello World!")
 module.exports = async function(callback) {
   try {
-    console.log("trying")
-    const instance = await IdentityDirectory.deployed();
-    const registrarCount = await instance.registrarCount();
-    console.log("Registrar Count:", registrarCount);
+    let IdentityDirectory = artifacts.require("IdentityDirectory");
+    let contract = await IdentityDirectory.deployed();
+    let result = await contract.registrarCount();
+    console.log(result);
   } catch (error) {
     console.log("error caught")
     console.error(error);
