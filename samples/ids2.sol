@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0
 
-pragma solidity >=0.4.22 <0.9.0;
+pragma solidity ^0.8.18;
 
 contract IdentityDirectory {
 
@@ -24,7 +24,7 @@ contract IdentityDirectory {
     // Registrar list for public listing rights
     mapping(address => bool) public isFounder;
     mapping(address => bool) public isRegistrar;
-    uint256 public registrarCount;
+    uint256 internal registrarCount;
 
     modifier onlyFounder() {
         require(isFounder[msg.sender], "Only Project Founders can perform this operation.");

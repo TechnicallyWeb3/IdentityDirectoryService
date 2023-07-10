@@ -1,0 +1,1078 @@
+{
+	"compiler": {
+		"version": "0.8.18+commit.87f61d96"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "string",
+						"name": "signedId",
+						"type": "string"
+					},
+					{
+						"components": [
+							{
+								"components": [
+									{
+										"internalType": "bool",
+										"name": "dns",
+										"type": "bool"
+									},
+									{
+										"internalType": "bool",
+										"name": "email",
+										"type": "bool"
+									},
+									{
+										"internalType": "bool",
+										"name": "web1",
+										"type": "bool"
+									},
+									{
+										"internalType": "bool",
+										"name": "social",
+										"type": "bool"
+									},
+									{
+										"internalType": "bool",
+										"name": "service",
+										"type": "bool"
+									},
+									{
+										"internalType": "bool",
+										"name": "web2",
+										"type": "bool"
+									},
+									{
+										"internalType": "bool",
+										"name": "web3",
+										"type": "bool"
+									},
+									{
+										"internalType": "bool",
+										"name": "hashed",
+										"type": "bool"
+									}
+								],
+								"internalType": "struct IdentityDirectory.IdType",
+								"name": "idType",
+								"type": "tuple"
+							},
+							{
+								"components": [
+									{
+										"internalType": "bool",
+										"name": "claimed",
+										"type": "bool"
+									},
+									{
+										"internalType": "bool",
+										"name": "signed",
+										"type": "bool"
+									},
+									{
+										"internalType": "bool",
+										"name": "validated",
+										"type": "bool"
+									},
+									{
+										"internalType": "bool",
+										"name": "rejected",
+										"type": "bool"
+									},
+									{
+										"internalType": "bool",
+										"name": "listed",
+										"type": "bool"
+									},
+									{
+										"internalType": "bool",
+										"name": "frozen",
+										"type": "bool"
+									},
+									{
+										"internalType": "bool",
+										"name": "reserved",
+										"type": "bool"
+									},
+									{
+										"internalType": "bool",
+										"name": "futureUse",
+										"type": "bool"
+									}
+								],
+								"internalType": "struct IdentityDirectory.IdStatus",
+								"name": "idStatus",
+								"type": "tuple"
+							},
+							{
+								"components": [
+									{
+										"internalType": "bytes32",
+										"name": "r",
+										"type": "bytes32"
+									},
+									{
+										"internalType": "bytes32",
+										"name": "s",
+										"type": "bytes32"
+									},
+									{
+										"internalType": "uint8",
+										"name": "v",
+										"type": "uint8"
+									}
+								],
+								"internalType": "struct IdentityDirectory.Signature",
+								"name": "registrant",
+								"type": "tuple"
+							}
+						],
+						"indexed": false,
+						"internalType": "struct IdentityDirectory.ClaimedId",
+						"name": "request",
+						"type": "tuple"
+					}
+				],
+				"name": "ClaimedIdAlert",
+				"type": "event"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_witness",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "_idName",
+						"type": "string"
+					},
+					{
+						"components": [
+							{
+								"internalType": "bytes32",
+								"name": "r",
+								"type": "bytes32"
+							},
+							{
+								"internalType": "bytes32",
+								"name": "s",
+								"type": "bytes32"
+							},
+							{
+								"internalType": "uint8",
+								"name": "v",
+								"type": "uint8"
+							}
+						],
+						"internalType": "struct IdentityDirectory.Signature",
+						"name": "_signature",
+						"type": "tuple"
+					}
+				],
+				"name": "claimIdentity",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					},
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "claimedRecord",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "bool",
+								"name": "dns",
+								"type": "bool"
+							},
+							{
+								"internalType": "bool",
+								"name": "email",
+								"type": "bool"
+							},
+							{
+								"internalType": "bool",
+								"name": "web1",
+								"type": "bool"
+							},
+							{
+								"internalType": "bool",
+								"name": "social",
+								"type": "bool"
+							},
+							{
+								"internalType": "bool",
+								"name": "service",
+								"type": "bool"
+							},
+							{
+								"internalType": "bool",
+								"name": "web2",
+								"type": "bool"
+							},
+							{
+								"internalType": "bool",
+								"name": "web3",
+								"type": "bool"
+							},
+							{
+								"internalType": "bool",
+								"name": "hashed",
+								"type": "bool"
+							}
+						],
+						"internalType": "struct IdentityDirectory.IdType",
+						"name": "idType",
+						"type": "tuple"
+					},
+					{
+						"components": [
+							{
+								"internalType": "bool",
+								"name": "claimed",
+								"type": "bool"
+							},
+							{
+								"internalType": "bool",
+								"name": "signed",
+								"type": "bool"
+							},
+							{
+								"internalType": "bool",
+								"name": "validated",
+								"type": "bool"
+							},
+							{
+								"internalType": "bool",
+								"name": "rejected",
+								"type": "bool"
+							},
+							{
+								"internalType": "bool",
+								"name": "listed",
+								"type": "bool"
+							},
+							{
+								"internalType": "bool",
+								"name": "frozen",
+								"type": "bool"
+							},
+							{
+								"internalType": "bool",
+								"name": "reserved",
+								"type": "bool"
+							},
+							{
+								"internalType": "bool",
+								"name": "futureUse",
+								"type": "bool"
+							}
+						],
+						"internalType": "struct IdentityDirectory.IdStatus",
+						"name": "idStatus",
+						"type": "tuple"
+					},
+					{
+						"components": [
+							{
+								"internalType": "bytes32",
+								"name": "r",
+								"type": "bytes32"
+							},
+							{
+								"internalType": "bytes32",
+								"name": "s",
+								"type": "bytes32"
+							},
+							{
+								"internalType": "uint8",
+								"name": "v",
+								"type": "uint8"
+							}
+						],
+						"internalType": "struct IdentityDirectory.Signature",
+						"name": "registrant",
+						"type": "tuple"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"name": "i",
+				"outputs": [
+					{
+						"components": [
+							{
+								"components": [
+									{
+										"components": [
+											{
+												"internalType": "bool",
+												"name": "dns",
+												"type": "bool"
+											},
+											{
+												"internalType": "bool",
+												"name": "email",
+												"type": "bool"
+											},
+											{
+												"internalType": "bool",
+												"name": "web1",
+												"type": "bool"
+											},
+											{
+												"internalType": "bool",
+												"name": "social",
+												"type": "bool"
+											},
+											{
+												"internalType": "bool",
+												"name": "service",
+												"type": "bool"
+											},
+											{
+												"internalType": "bool",
+												"name": "web2",
+												"type": "bool"
+											},
+											{
+												"internalType": "bool",
+												"name": "web3",
+												"type": "bool"
+											},
+											{
+												"internalType": "bool",
+												"name": "hashed",
+												"type": "bool"
+											}
+										],
+										"internalType": "struct IdentityDirectory.IdType",
+										"name": "idType",
+										"type": "tuple"
+									},
+									{
+										"components": [
+											{
+												"internalType": "bool",
+												"name": "claimed",
+												"type": "bool"
+											},
+											{
+												"internalType": "bool",
+												"name": "signed",
+												"type": "bool"
+											},
+											{
+												"internalType": "bool",
+												"name": "validated",
+												"type": "bool"
+											},
+											{
+												"internalType": "bool",
+												"name": "rejected",
+												"type": "bool"
+											},
+											{
+												"internalType": "bool",
+												"name": "listed",
+												"type": "bool"
+											},
+											{
+												"internalType": "bool",
+												"name": "frozen",
+												"type": "bool"
+											},
+											{
+												"internalType": "bool",
+												"name": "reserved",
+												"type": "bool"
+											},
+											{
+												"internalType": "bool",
+												"name": "futureUse",
+												"type": "bool"
+											}
+										],
+										"internalType": "struct IdentityDirectory.IdStatus",
+										"name": "idStatus",
+										"type": "tuple"
+									},
+									{
+										"components": [
+											{
+												"internalType": "bytes32",
+												"name": "r",
+												"type": "bytes32"
+											},
+											{
+												"internalType": "bytes32",
+												"name": "s",
+												"type": "bytes32"
+											},
+											{
+												"internalType": "uint8",
+												"name": "v",
+												"type": "uint8"
+											}
+										],
+										"internalType": "struct IdentityDirectory.Signature",
+										"name": "registrant",
+										"type": "tuple"
+									}
+								],
+								"internalType": "struct IdentityDirectory.ClaimedId",
+								"name": "claimedId",
+								"type": "tuple"
+							},
+							{
+								"components": [
+									{
+										"internalType": "bool",
+										"name": "witness",
+										"type": "bool"
+									},
+									{
+										"internalType": "bool",
+										"name": "registrar",
+										"type": "bool"
+									},
+									{
+										"internalType": "bool",
+										"name": "authority",
+										"type": "bool"
+									},
+									{
+										"internalType": "bool",
+										"name": "kyc",
+										"type": "bool"
+									}
+								],
+								"internalType": "struct IdentityDirectory.SigType",
+								"name": "sigType",
+								"type": "tuple"
+							},
+							{
+								"components": [
+									{
+										"internalType": "bytes32",
+										"name": "r",
+										"type": "bytes32"
+									},
+									{
+										"internalType": "bytes32",
+										"name": "s",
+										"type": "bytes32"
+									},
+									{
+										"internalType": "uint8",
+										"name": "v",
+										"type": "uint8"
+									}
+								],
+								"internalType": "struct IdentityDirectory.Signature",
+								"name": "signer",
+								"type": "tuple"
+							}
+						],
+						"internalType": "struct IdentityDirectory.IdReceipt",
+						"name": "signedId",
+						"type": "tuple"
+					},
+					{
+						"internalType": "uint256",
+						"name": "totalSigCount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "witnessSigCount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "registrarSigCount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "authoritySigCount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "kycSigCount",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "isFounder",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "isRegistrar",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "_idName",
+						"type": "string"
+					},
+					{
+						"internalType": "address",
+						"name": "_registrant",
+						"type": "address"
+					},
+					{
+						"components": [
+							{
+								"internalType": "bytes32",
+								"name": "r",
+								"type": "bytes32"
+							},
+							{
+								"internalType": "bytes32",
+								"name": "s",
+								"type": "bytes32"
+							},
+							{
+								"internalType": "uint8",
+								"name": "v",
+								"type": "uint8"
+							}
+						],
+						"internalType": "struct IdentityDirectory.Signature",
+						"name": "_signature",
+						"type": "tuple"
+					}
+				],
+				"name": "signIdentity",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"name": "signedRecord",
+				"outputs": [
+					{
+						"components": [
+							{
+								"components": [
+									{
+										"components": [
+											{
+												"internalType": "bool",
+												"name": "dns",
+												"type": "bool"
+											},
+											{
+												"internalType": "bool",
+												"name": "email",
+												"type": "bool"
+											},
+											{
+												"internalType": "bool",
+												"name": "web1",
+												"type": "bool"
+											},
+											{
+												"internalType": "bool",
+												"name": "social",
+												"type": "bool"
+											},
+											{
+												"internalType": "bool",
+												"name": "service",
+												"type": "bool"
+											},
+											{
+												"internalType": "bool",
+												"name": "web2",
+												"type": "bool"
+											},
+											{
+												"internalType": "bool",
+												"name": "web3",
+												"type": "bool"
+											},
+											{
+												"internalType": "bool",
+												"name": "hashed",
+												"type": "bool"
+											}
+										],
+										"internalType": "struct IdentityDirectory.IdType",
+										"name": "idType",
+										"type": "tuple"
+									},
+									{
+										"components": [
+											{
+												"internalType": "bool",
+												"name": "claimed",
+												"type": "bool"
+											},
+											{
+												"internalType": "bool",
+												"name": "signed",
+												"type": "bool"
+											},
+											{
+												"internalType": "bool",
+												"name": "validated",
+												"type": "bool"
+											},
+											{
+												"internalType": "bool",
+												"name": "rejected",
+												"type": "bool"
+											},
+											{
+												"internalType": "bool",
+												"name": "listed",
+												"type": "bool"
+											},
+											{
+												"internalType": "bool",
+												"name": "frozen",
+												"type": "bool"
+											},
+											{
+												"internalType": "bool",
+												"name": "reserved",
+												"type": "bool"
+											},
+											{
+												"internalType": "bool",
+												"name": "futureUse",
+												"type": "bool"
+											}
+										],
+										"internalType": "struct IdentityDirectory.IdStatus",
+										"name": "idStatus",
+										"type": "tuple"
+									},
+									{
+										"components": [
+											{
+												"internalType": "bytes32",
+												"name": "r",
+												"type": "bytes32"
+											},
+											{
+												"internalType": "bytes32",
+												"name": "s",
+												"type": "bytes32"
+											},
+											{
+												"internalType": "uint8",
+												"name": "v",
+												"type": "uint8"
+											}
+										],
+										"internalType": "struct IdentityDirectory.Signature",
+										"name": "registrant",
+										"type": "tuple"
+									}
+								],
+								"internalType": "struct IdentityDirectory.ClaimedId",
+								"name": "claimedId",
+								"type": "tuple"
+							},
+							{
+								"components": [
+									{
+										"internalType": "bool",
+										"name": "witness",
+										"type": "bool"
+									},
+									{
+										"internalType": "bool",
+										"name": "registrar",
+										"type": "bool"
+									},
+									{
+										"internalType": "bool",
+										"name": "authority",
+										"type": "bool"
+									},
+									{
+										"internalType": "bool",
+										"name": "kyc",
+										"type": "bool"
+									}
+								],
+								"internalType": "struct IdentityDirectory.SigType",
+								"name": "sigType",
+								"type": "tuple"
+							},
+							{
+								"components": [
+									{
+										"internalType": "bytes32",
+										"name": "r",
+										"type": "bytes32"
+									},
+									{
+										"internalType": "bytes32",
+										"name": "s",
+										"type": "bytes32"
+									},
+									{
+										"internalType": "uint8",
+										"name": "v",
+										"type": "uint8"
+									}
+								],
+								"internalType": "struct IdentityDirectory.Signature",
+								"name": "signer",
+								"type": "tuple"
+							}
+						],
+						"internalType": "struct IdentityDirectory.IdReceipt",
+						"name": "signedId",
+						"type": "tuple"
+					},
+					{
+						"internalType": "uint256",
+						"name": "totalSigCount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "witnessSigCount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "registrarSigCount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "authoritySigCount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "kycSigCount",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"name": "signerReceipt",
+				"outputs": [
+					{
+						"components": [
+							{
+								"components": [
+									{
+										"internalType": "bool",
+										"name": "dns",
+										"type": "bool"
+									},
+									{
+										"internalType": "bool",
+										"name": "email",
+										"type": "bool"
+									},
+									{
+										"internalType": "bool",
+										"name": "web1",
+										"type": "bool"
+									},
+									{
+										"internalType": "bool",
+										"name": "social",
+										"type": "bool"
+									},
+									{
+										"internalType": "bool",
+										"name": "service",
+										"type": "bool"
+									},
+									{
+										"internalType": "bool",
+										"name": "web2",
+										"type": "bool"
+									},
+									{
+										"internalType": "bool",
+										"name": "web3",
+										"type": "bool"
+									},
+									{
+										"internalType": "bool",
+										"name": "hashed",
+										"type": "bool"
+									}
+								],
+								"internalType": "struct IdentityDirectory.IdType",
+								"name": "idType",
+								"type": "tuple"
+							},
+							{
+								"components": [
+									{
+										"internalType": "bool",
+										"name": "claimed",
+										"type": "bool"
+									},
+									{
+										"internalType": "bool",
+										"name": "signed",
+										"type": "bool"
+									},
+									{
+										"internalType": "bool",
+										"name": "validated",
+										"type": "bool"
+									},
+									{
+										"internalType": "bool",
+										"name": "rejected",
+										"type": "bool"
+									},
+									{
+										"internalType": "bool",
+										"name": "listed",
+										"type": "bool"
+									},
+									{
+										"internalType": "bool",
+										"name": "frozen",
+										"type": "bool"
+									},
+									{
+										"internalType": "bool",
+										"name": "reserved",
+										"type": "bool"
+									},
+									{
+										"internalType": "bool",
+										"name": "futureUse",
+										"type": "bool"
+									}
+								],
+								"internalType": "struct IdentityDirectory.IdStatus",
+								"name": "idStatus",
+								"type": "tuple"
+							},
+							{
+								"components": [
+									{
+										"internalType": "bytes32",
+										"name": "r",
+										"type": "bytes32"
+									},
+									{
+										"internalType": "bytes32",
+										"name": "s",
+										"type": "bytes32"
+									},
+									{
+										"internalType": "uint8",
+										"name": "v",
+										"type": "uint8"
+									}
+								],
+								"internalType": "struct IdentityDirectory.Signature",
+								"name": "registrant",
+								"type": "tuple"
+							}
+						],
+						"internalType": "struct IdentityDirectory.ClaimedId",
+						"name": "claimedId",
+						"type": "tuple"
+					},
+					{
+						"components": [
+							{
+								"internalType": "bool",
+								"name": "witness",
+								"type": "bool"
+							},
+							{
+								"internalType": "bool",
+								"name": "registrar",
+								"type": "bool"
+							},
+							{
+								"internalType": "bool",
+								"name": "authority",
+								"type": "bool"
+							},
+							{
+								"internalType": "bool",
+								"name": "kyc",
+								"type": "bool"
+							}
+						],
+						"internalType": "struct IdentityDirectory.SigType",
+						"name": "sigType",
+						"type": "tuple"
+					},
+					{
+						"components": [
+							{
+								"internalType": "bytes32",
+								"name": "r",
+								"type": "bytes32"
+							},
+							{
+								"internalType": "bytes32",
+								"name": "s",
+								"type": "bytes32"
+							},
+							{
+								"internalType": "uint8",
+								"name": "v",
+								"type": "uint8"
+							}
+						],
+						"internalType": "struct IdentityDirectory.Signature",
+						"name": "signer",
+						"type": "tuple"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts\\ids.sol": "IdentityDirectory"
+		},
+		"evmVersion": "paris",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"contracts\\ids.sol": {
+			"keccak256": "0x1973d749538523f631c5a0141c87d54cca4734bbba6b478067675226b0e412ba",
+			"license": "GPL-3.0",
+			"urls": [
+				"bzz-raw://0e72c5c90329a5aaa34981c2a353be3474eb1481a03a69b9af395283518f7710",
+				"dweb:/ipfs/QmbA7huRR1QbL3yBfVj89fRJRzY9Yr71xkzfmewybWdzsf"
+			]
+		}
+	},
+	"version": 1
+}
