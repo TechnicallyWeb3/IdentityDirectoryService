@@ -156,7 +156,6 @@ contract IdentityDirectory {
         }
     }
 
-
     struct SigType {
         bool witness;
         bool registrar;  
